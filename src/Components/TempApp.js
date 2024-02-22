@@ -1,54 +1,63 @@
-import React, { useState } from "react";
-import "./style.css"
+import React, { useState } from 'react';
 
-const TempApp = () => {
+const WeatherCard = ({ city, temperature, min_Temp, max_Temp, weatherDescription }) => (
+    <div className="card">
+        <div className="card-body">
+            <h5 className="card-title">{city}</h5>
+            <hr />
+            <p className="card-text">Temperature: {temperature} K</p>
+            <p className="card-text">Min-Temp.: {min_Temp}</p>
+            <p className="card-text">Max-Temp.: {max_Temp}</p>
+            <p className="card-text">Weather: {weatherDescription}</p>
+        </div>
+    </div>
+);
 
-    const [city, setCity] = useState(null);
-    const [search, setSearch] = useState("");
+const Weather = () => {
+    const [weatherData, setWeatherData] = useState(null);
+    const [city, setCity] = useState('');
 
-    const SearchWeather = () => {
-        fetchWeather();
-    }
+    const fetchWeatherData = async () => {
+        try {
+            const response = await fetch(`https:api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=dbd907bd55ff95f3c244f283f6b1c272`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log(data); // Log the fetched data for debugging purposes
+            setWeatherData(data);
+        } catch (error) {
+            console.log("Error fetching weather data:", error);
+        }
+    };
 
-
-    const fetchWeather = async () => {
-        let api = `https:api.openweathermap.org/data/2.5/weather?q=${search}&units=metric&appid=dbd907bd55ff95f3c244f283f6b1c272`;
-        const response = await fetch(api);
-        const Response = await response.json();
-        setCity(Response.main)
-    }
-
-
+    const handleSearch = () => {
+        fetchWeatherData();
+    };
 
     return (
-        <>
-            <div className="box ">
-                <div className="inputData ">
-                    <input type="search" value={search} placeholder="Enter city name.." className="inputField" onChange={(e) => setSearch(e.target.value)}
-                    />
-                    <button className=" SearchBtn" type="button" onClick={SearchWeather}>Search</button>
-                </div>
-
-                {
-                    !city ? (
-                        <p className="errorMsg">No Data Found</p>
-                    ) : (
-                        <div className="info">
-                            <h2 className="location center">
-                                <i className="fa-solid fa-street-view"></i> {search}
-                            </h2>
-                            <h1 className="temp center">
-                                {city.temp}° C
-                            </h1>
-                            <h3 className="tempmin_max center">Min : {city.temp_min}° C | Max : {city.temp_max}° C</h3>
-                        </div>
-                    )
-                }
-
-
+        <div>
+            <div className="input-group mb-3">
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter city"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                />
+                <button className="btn btn-primary" type="button" onClick={handleSearch}>Search</button>
             </div>
-        </>
-    )
-}
+            {weatherData && (
+                <WeatherCard
+                    city={weatherData.name}
+                    temperature={weatherData.main.temp}
+                    min_Temp={weatherData.main.temp_min}
+                    max_Temp={weatherData.main.temp_max}
+                    weatherDescription={weatherData.weather[0].description}
+                />
+            )}
+        </div>
+    );
+};
 
-export default TempApp;
+export default Weather;
