@@ -23,7 +23,7 @@ function App() {
 
   const fetchWeatherData = async () => {
     try {
-      const response = await fetch(`https:api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=dbd907bd55ff95f3c244f283f6b1c272`);
+      const response = await fetch(`https//:api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=dbd907bd55ff95f3c244f283f6b1c272`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
