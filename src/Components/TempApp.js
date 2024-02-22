@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./style.css"
 
 const TempApp = () => {
@@ -6,26 +6,27 @@ const TempApp = () => {
     const [city, setCity] = useState(null);
     const [search, setSearch] = useState("");
 
-    useEffect(() => {
-        const fetchApi = async () => {
+    const SearchWeather = () => {
+        fetchWeather();
+    }
 
-            let api = `https:api.openweathermap.org/data/2.5/weather?q=${search}&units=metric&appid=dbd907bd55ff95f3c244f283f6b1c272
-            `;
-            const response = await fetch(api);
-            const Response = await response.json();
-            setCity(Response.main)
-        }
 
-        fetchApi();
-    }, [search])
+    const fetchWeather = async () => {
+        let api = `https:api.openweathermap.org/data/2.5/weather?q=${search}&units=metric&appid=dbd907bd55ff95f3c244f283f6b1c272`;
+        const response = await fetch(api);
+        const Response = await response.json();
+        setCity(Response.main)
+    }
+
+
 
     return (
         <>
-            <div className="box">
-                <div className="inputData">
-                    <input type="search" value={search} placeholder="Enter city name.." className="inputField" onChange={(e) => {
-                        setSearch(e.target.value)
-                    }} />
+            <div className="box ">
+                <div className="inputData ">
+                    <input type="search" value={search} placeholder="Enter city name.." className="inputField" onChange={(e) => setSearch(e.target.value)}
+                    />
+                    <button className=" SearchBtn" type="button" onClick={SearchWeather}>Search</button>
                 </div>
 
                 {
@@ -41,8 +42,6 @@ const TempApp = () => {
                             </h1>
                             <h3 className="tempmin_max center">Min : {city.temp_min}° C | Max : {city.temp_max}° C</h3>
                         </div>
-
-
                     )
                 }
 
